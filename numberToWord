@@ -1,0 +1,367 @@
+import Foundation
+
+func sumProp(nSum: Int, sGender: String, sCase: String) -> String {
+
+    guard nSum > 0 && nSum < 1_000_000_000_000 else {
+        return "Число вне диапазона"
+    }
+    // Склонение числа 1 и 2 по падежам и родам
+    let one: [String: [String: String]] = [
+        "М": ["И":"один", "Р":"одного", "Д":"одному", "В":"один", "Т":"одним", "П":"одном"],
+        "Ж": ["И":"одна", "Р":"одной", "Д":"одной", "В":"одну", "Т":"одной", "П":"одной"],
+        "С": ["И":"одно", "Р":"одного", "Д":"одному", "В":"одно", "Т":"одним", "П":"одном"]
+    ]
+    let two: [String: [String: String]] = [
+        "М": ["И":"два", "Р":"двух", "Д":"двум", "В":"два", "Т":"двумя", "П":"двух"],
+        "Ж": ["И":"две", "Р":"двух", "Д":"двум", "В":"два", "Т":"двумя", "П":"двух"],
+        "С": ["И":"два", "Р":"двух", "Д":"двум", "В":"два", "Т":"двумя", "П":"двух"]
+    ]
+    // Склонение чисел 3-9
+    let units: [Int: [String: String]] = [
+        3: ["И": "три","Р": "трех","Д": "трем","В": "три","Т": "тремя","П": "трех"],
+        4: ["И": "четыре","Р": "четырех","Д": "четырем","В": "четыре","Т": "четырьмя","П": "четырех"],
+        5: ["И": "пять","Р": "пяти","Д": "пяти","В": "пять","Т": "пятью","П": "пяти"],
+        6: ["И": "шесть","Р": "шести","Д": "шести","В": "шесть","Т": "шестью","П": "шести"],
+        7: ["И": "семь","Р": "семи","Д": "семи","В": "семь","Т": "семью","П": "семи"],
+        8: ["И": "восемь","Р": "восьми","Д": "восьми","В": "восемь","Т": "восемью","П": "восьми"],
+        9: ["И": "девять","Р": "девяти","Д": "девяти","В": "девять","Т": "девятью","П": "девяти"]
+    ]
+    // Склонение чисел 10-19
+    let teens: [Int: [String: String]] = [
+        10: ["И":"десять", "Р":"десяти", "Д":"десяти", "В":"десять", "Т":"десятью", "П":"десяти"],
+        11: ["И":"одиннадцать", "Р":"одиннадцати", "Д":"одиннадцати", "В":"одиннадцать", "Т":"одиннадцатью", "П":"одиннадцати"],
+        12: ["И":"двенадцать", "Р":"двенадцати", "Д":"двенадцати", "В":"двенадцать", "Т":"двенадцатью", "П":"двенадцати"],
+        13: ["И":"тринадцать", "Р":"тринадцати", "Д":"тринадцати", "В":"тринадцать", "Т":"тринадцатью", "П":"тринадцати"],
+        14: ["И":"четырнадцать", "Р":"четырнадцати", "Д":"четырнадцати", "В":"четырнадцать", "Т":"четырнадцатью", "П":"четырнадцати"],
+        15: ["И":"пятнадцать", "Р":"пятнадцати", "Д":"пятнадцати", "В":"пятнадцать", "Т":"пятнадцатью", "П":"пятнадцати"],
+        16: ["И":"шестнадцать", "Р":"шестнадцати","Д": "шестнадцати", "В":"шестнадцать", "Т":"шестнадцатью", "П":"шестнадцати"],
+        17: ["И":"семнадцать", "Р":"семнадцати", "Д":"семнадцати", "В":"семнадцать", "Т":"семнадцатью", "П":"семнадцати"],
+        18: ["И":"восемнадцать", "Р":"восемнадцати", "Д":"восемнадцати", "В":"восемнадцать", "Т":"восемнадцатью", "П":"восемнадцати"],
+        19: ["И":"девятнадцать", "Р":"девятнадцати", "Д":"девятнадцати", "В":"девятнадцать", "Т":"девятнадцатью", "П":"девятнадцати"]
+    ]
+    // Склонение чисел 20, 30, 40, 90
+    let twentyToNinety: [Int: [String: String]] = [
+        20: ["И":"двадцать", "Р":"двадцати", "Д":"двадцати", "В":"двадцать", "Т":"двадцатью", "П":"двадцати"],
+        30: ["И":"тридцать", "Р":"тридцати", "Д":"тридцати", "В":"тридцать", "Т":"тридцатью", "П":"тридцати"],
+        40: ["И":"сорок", "Р":"сорока", "Д":"сорока", "В":"сорок", "Т":"сорока", "П":"сорока"],
+        90: ["И":"девяносто", "Р":"девяноста", "Д":"девяноста", "В":"девяносто", "Т":"девяноста", "П":"девяноста"]
+    ]
+    // Склонение чисел 50, 60, 70, 80
+    let fiftyToEighty: [String: String] = [
+        "И":"десят", "Р":"десяти", "Д":"десяти", "В":"десят", "Т":"десятью", "П":"десяти"
+    ]
+    // Склонение числа 100, 200
+    let oneTwoHundred: [Int: [String: String]] = [
+        100: ["И":"сто", "Р":"ста", "Д":"ста", "В":"сто", "Т":"ста"],
+        200: ["И":"двести", "Р":"двухсот", "Д":"двумстам", "В":"двести", "Т":"двумястами", "П":"двухстах"]
+    ]
+    //Склонение чисел 300,400
+    let threeToFourHundred: [String: String] = [
+        "И":"ста", "Р":"сот", "Д":"стам", "В":"ста", "Т":"стами", "П":"стах"
+    ]
+    //Склонение чисел 500-900
+    let fiveToNineHundred: [String: String] = [
+        "И":"сот", "Р":"сот", "Д":"стам", "В":"сот", "Т":"стами", "П":"стах"
+    ]
+    //Склонение числа 1000
+    let oneThousands: [String: String] = [
+        "И":"одна тысяча", "Р":"одной тысячи", "Д":"одной тысяче", "В":"одну тысячу", "Т":"одной тысячей", "П":"одной тысяче"
+    ]
+    //Склонение числа 2000
+    let twoThousands: [String: String] = [
+        "И":"две тысячи", "Р":"двух тысяч", "Д":"двум тысячам", "В":"две тысячи", "Т":"двумя тысячами", "П":"двух тысячах"
+    ]
+    //Склонение числа 3000, 4000
+    let threeToFourThousands: [String: String] = [
+        "И":"тысячи", "Р":"тысячах", "Д":"тысячам", "В":"тысячи", "Т":"тысячами", "П":"тысячах"
+    ]
+    //Склонение тысяч
+    let thousands: [String: String] = [
+        "И":"тысяч", "Р":"тысяч", "Д":"тысячам", "В":"тысяч", "Т":"тысячами", "П":"тысячах"
+    ]
+    //Склонение числа 1_000_000
+    let oneMillions: [String: String] = [
+        "И":"один миллион", "Р":"одного миллиона", "Д":"одному миллиону", "В":"один миллион", "Т":"одним миллионом", "П":"одном миллионе"
+    ]
+    //Склонение числа 2_000_000
+    let twoMillions: [String: String] = [
+        "И":"два миллиона", "Р":"двух миллионов", "Д":"двум миллионам", "В":"два миллиона", "Т":"двумя миллионами", "П":"двух миллионах"
+    ]
+    //Склонение числа 3_000_000, 4_000_000
+    let threeFourMillions: [String: String] = [
+        "И":"миллиона", "Р":"миллионов", "Д":"миллионам", "В":"миллиона", "Т":"миллионами", "П":"миллионах"
+    ]
+    //Склонение миллионов
+    let millions: [String: String] = [
+        "И":"миллионов", "Р":"миллионов", "Д":"миллионам", "В":"миллионов", "Т":"миллионами", "П":"миллионах"
+    ]
+    //Склонение числа 1_000_000_000
+    let oneBillions: [String: String] = [
+        "И":"один миллиард", "Р":"одного миллиарда", "Д":"одному миллиарду", "В":"один миллиард", "Т":"одним миллиардом", "П":"одном миллиарде"
+    ]
+    //Склонение числа 2_000_000_000
+    let twoBillions: [String: String] = [
+        "И":"два миллиарда", "Р":"двух миллиардов", "Д":"двум миллиардам", "В":"два миллиарда", "Т":"двумя миллиардами", "П":"двух миллиардов"
+    ]
+    //Склонение числа 3_000_000_000, 4_000_000_000
+    let threeFourBillions: [String: String] = [
+        "И":"миллиарда", "Р":"миллиардов", "Д":"миллиардам", "В":"миллиарда", "Т":"миллиардами", "П":"миллиардов"
+    ]
+    //Склонение миллиардов
+    let billions: [String: String] = [
+        "И":"миллиардов", "Р":"миллиардов", "Д":"миллиардам", "В":"миллиардов", "Т":"миллиардами", "П":"миллиардах"
+    ]
+    //Функция обращения к словарям
+    func getDictionaryWord(for number: Int, range: String, sGender: String, sCase: String) -> String {
+        switch range {
+        case "units":
+            return units[number]?[sCase] ?? ""
+        case "oneTwoHundred":
+            return oneTwoHundred[number]?[sCase] ?? ""
+        case "threeToFourHundred":
+            return threeToFourHundred[sCase] ?? ""
+        case "fiveToNineHundred":
+            return fiveToNineHundred[sCase] ?? ""
+        case "teens":
+            return teens[number]?[sCase] ?? ""
+        case "twentyToNinety":
+            return twentyToNinety[number]?[sCase] ?? ""
+        case "fiftyToEighty":
+            return fiftyToEighty[sCase] ?? ""
+        case "oneThousands":
+            return oneThousands[sCase] ?? ""
+        case "twoThousands":
+            return twoThousands[sCase] ?? ""
+        case "threeToFourThousands":
+            return threeToFourThousands[sCase] ?? ""
+        case "thousands":
+            return thousands[sCase] ?? ""
+        case "oneMillions":
+            return oneMillions[sCase] ?? ""
+        case "twoMillions":
+            return twoMillions[sCase] ?? ""
+        case "threeToFourMillions":
+            return threeFourMillions[sCase] ?? ""
+        case "millions":
+            return millions[sCase] ?? ""
+        case "oneBillions":
+            return oneBillions[sCase] ?? ""
+        case "twoBillions":
+            return twoBillions[sCase] ?? ""
+        case "threeToFourBillions":
+            return threeFourBillions[sCase] ?? ""
+        case "billions":
+            return billions[sCase] ?? ""
+        default:
+            return ""
+        }
+    }
+    //функция получения единиц
+    func getUnit(_ unit: Int) -> String {
+        var units = ""
+        switch unit {
+        case 1:
+            units = one[sGender]?[sCase] ?? ""
+        case 2:
+            units = two[sGender]?[sCase] ?? ""
+        case 3, 4, 5, 6, 7, 8, 9:
+            units = getDictionaryWord( for: unit, range: "units", sGender: sGender, sCase: sCase)
+        default:
+            break
+        }
+        return units
+    }
+    //функция получения чисел до 1000
+    func convertPartToWords(_ part: Int) -> String {
+        var words = ""
+        let remainder = part % 100
+        if part >= 100 {
+            var hundredWord = ""
+            let numberHandred = part/100 * 100
+            let hundredUnit = getUnit(part / 100)
+            switch numberHandred {
+            case 100, 200:
+                hundredWord = getDictionaryWord( for: numberHandred, range: "oneTwoHundred", sGender: sGender, sCase: sCase)
+            case 300, 400:
+                hundredWord = getDictionaryWord( for: numberHandred, range: "threeToFourHundred", sGender: sGender, sCase: sCase)
+                hundredWord = hundredUnit + hundredWord
+            case 500, 600, 700, 800, 900:
+                hundredWord = getDictionaryWord( for: numberHandred, range: "fiveToNineHundred", sGender: sGender, sCase: sCase)
+                hundredWord = hundredUnit + hundredWord
+            default:
+                break
+            }
+            words += (words.isEmpty ? "" : " ") + hundredWord
+        }
+        //получение чисел до 100
+        if remainder >= 10 && remainder < 20 {
+            let teensWord = getDictionaryWord( for: remainder, range: "teens", sGender: sGender, sCase: sCase)
+            words += (words.isEmpty ? "" : " ") + teensWord
+        } else {
+            if remainder >= 20 {
+                var tensWord = ""
+                let number = remainder/10 * 10
+                let tenWord = getUnit(remainder / 10)
+                let unit = getUnit(remainder % 10)
+                switch number {
+                case 20, 30, 40, 90:
+                    tensWord = getDictionaryWord( for: number, range: "twentyToNinety", sGender: sGender, sCase: sCase)
+                case 50, 60, 70, 80:
+                    tensWord = getDictionaryWord( for: number, range: "fiftyToEighty", sGender: sGender, sCase: sCase)
+                    tensWord = tenWord + tensWord
+                default:
+                    break
+                }
+                words += (words.isEmpty ? "" : " ") + tensWord + " " + unit
+            }
+            if remainder < 10 {
+                let units = getUnit(remainder % 10)
+                words += (words.isEmpty ? "" : " ") + units
+            }
+        }
+        return words.trimmingCharacters(in: .whitespaces)
+    }
+    //функция получения чисел до от 1_000 до 999_999_999_999
+    func getWordForm(part: Int, sGender: String, sCase: String, unit: String) -> String {
+        let partWords = convertPartToWords(part)
+        let tenWord = convertPartToWords(part / 10 * 10)
+        //Обработка формы для чисел остальных миллионов, тысяч и триллионов
+        let anotherWords: (String, String) -> String = { sGender, sCase in
+            switch unit {
+            case "million":
+                return getDictionaryWord( for: part, range: "millions", sGender: sGender, sCase: sCase)
+            case "thousand":
+                return getDictionaryWord( for: part, range: "thousands", sGender: sGender, sCase: sCase)
+            case "billion":
+                return getDictionaryWord( for: part, range: "billions", sGender: sGender, sCase: sCase)
+            default:
+                return ""
+            }
+        }
+        //Обработка чисел один миллион, одна тысяча, один триллион
+        let oneWord: (String, String) -> String = { sGender, sCase in
+            switch unit {
+            case "million":
+                return getDictionaryWord( for: part, range: "oneMillions", sGender: sGender, sCase: sCase)
+            case "thousand":
+                return getDictionaryWord( for: part, range: "oneThousands", sGender: sGender, sCase: sCase)
+            case "billion":
+                return getDictionaryWord( for: part, range: "oneBillions", sGender: sGender, sCase: sCase)
+            default:
+                return ""
+            }
+        }
+        //Обработка чисел два миллиона, две тысячи, два триллиона
+        let twoWord: (String, String) -> String = { sGender, sCase in
+            switch unit {
+            case "million":
+                return getDictionaryWord( for: part, range: "twoMillions", sGender: sGender, sCase: sCase)
+            case "thousand":
+                return getDictionaryWord( for: part, range: "twoThousands", sGender: sGender, sCase: sCase)
+            case "billion":
+                return getDictionaryWord( for: part, range: "twoBillions", sGender: sGender, sCase: sCase)
+            default:
+                return ""
+            }
+        }
+        //Обработка формы для чисел 3 и 4 миллиона, 3 и 4 тысячи, 3 и 4 триллиона
+        let threeToFourWord: (String, String) -> String = { sGender, sCase in
+            switch unit {
+            case "million":
+                return getDictionaryWord( for: part, range: "threeToFourMillions", sGender: sGender, sCase: sCase)
+            case "thousand":
+                return getDictionaryWord( for: part, range: "threeToFourThousands", sGender: sGender, sCase: sCase)
+            case "billion":
+                return getDictionaryWord( for: part, range: "threeToFourBillions", sGender: sGender, sCase: sCase)
+            default:
+                return ""
+            }
+        }
+        //Вспомогательная функция для получения форм для чисел 21,22,23,24...91,92,93,94
+        func handleLessThanThousand(_ x: Int) -> String {
+                var wording = ""
+                var y = x % 100
+                if y == 11 || y == 12 {
+                    wording = partWords + " " + anotherWords(sGender, sCase)
+                } else {
+                    switch y % 10 {
+                    case 1:
+                        wording = tenWord + " " + oneWord(sGender, sCase)
+                    case 2:
+                        wording = tenWord + " " + twoWord(sGender, sCase)
+                    case 3, 4:
+                        wording = partWords + " " + threeToFourWord(sGender, sCase)
+                    default:
+                        wording = partWords + " " + anotherWords(sGender, sCase)
+                    }
+                }
+            return wording
+        }
+        //Вспомогательная функция для получения форм для чисел до 999
+        func getForm() -> String {
+            switch part {
+            case 1:
+                return oneWord(sGender, sCase)
+            case 2:
+                return twoWord(sGender, sCase)
+            case 3, 4:
+                return threeToFourWord(sGender, sCase)
+            case 5...9, 10...19, 20, 30, 40, 50, 60, 70, 80, 90:
+                return anotherWords(sGender, sCase)
+            case let x where x < 1000:
+                return handleLessThanThousand(x)
+            default:
+                return ""
+            }
+        }
+
+        var word = getForm()
+        if part < 100 {
+            if (part >= 3 && part <= 19) || part % 10 == 0 {
+                word = partWords + " " + word
+            }
+        }
+        return word
+    }
+    //Функции к получению соответствующих форм числа по разрядам
+    func getThousandWord(_ part: Int, sGender: String, sCase: String) -> String {
+        return getWordForm(part: part, sGender: sGender, sCase: sCase, unit: "thousand")
+    }
+
+    func getMillionsWord(_ part: Int, sGender: String, sCase: String) -> String {
+        return getWordForm(part: part, sGender: sGender, sCase: sCase, unit: "million")
+    }
+
+    func getBillionsWord(_ part: Int, sGender: String, sCase: String) -> String {
+        return getWordForm(part: part, sGender: sGender, sCase: sCase, unit: "billion")
+    }
+    //Основная логика получения текстового представления целых чисел
+    var result = ""
+    var number = nSum
+    var thousandIndex = 0
+    while number > 0 {
+        let part = number % 1000
+        if part > 0 {
+            let partWords = convertPartToWords(part)
+            if thousandIndex > 0 {
+                var thousandWord = ""
+                switch thousandIndex {
+                case 1:
+                    thousandWord = getThousandWord(part, sGender: sGender, sCase: sCase)
+                case 2:
+                    thousandWord = getMillionsWord(part, sGender: sGender, sCase: sCase)
+                case 3:
+                    thousandWord = getBillionsWord(part, sGender: sGender, sCase: sCase)
+                default:
+                    break
+                }
+                result = (thousandWord.isEmpty ? "" : (" \(thousandWord)")) + (result.isEmpty ? "" : " ") + "  " + result
+            } else {
+                result = partWords + (result.isEmpty ? "" : " ") + result
+            }
+        }
+        number /= 1000
+        thousandIndex += 1
+    }
+    return result.trimmingCharacters(in: .whitespaces)
+}
